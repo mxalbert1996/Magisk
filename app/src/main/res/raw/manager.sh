@@ -177,6 +177,14 @@ check_encryption() {
   fi
 }
 
+check_vbmeta_partition() {
+  if [ -e /dev/block/by-name/vbmeta_a ] || [ -e /dev/block/by-name/vbmeta ]; then
+    VBMETAEXIST=true
+  else
+    VBMETAEXIST=false
+  fi
+}
+
 ##########################
 # Non-root util_functions
 ##########################
@@ -192,6 +200,8 @@ get_flags() {
   [ "$(getprop ro.crypto.state)" = "encrypted" ] && ISENCRYPTED=true || ISENCRYPTED=false
   KEEPFORCEENCRYPT=$ISENCRYPTED
   # Do NOT preset RECOVERYMODE here
+  KEEPVBMETAFLAG=true
+  # Keep vbmetaflag by default, show option to user
 }
 
 run_migrations() { return; }
@@ -209,6 +219,7 @@ app_init() {
   SHA1=$(grep_prop SHA1 $MAGISKTMP/config)
   check_boot_ramdisk && RAMDISKEXIST=true || RAMDISKEXIST=false
   check_encryption
+  check_vbmeta_partition
   # Make sure RECOVERYMODE has value
   [ -z $RECOVERYMODE ] && RECOVERYMODE=false
 }
