@@ -23,11 +23,6 @@ android {
             proguardFiles("proguard-rules.pro")
         }
     }
-
-    dependenciesInfo {
-        includeInApk = false
-        includeInBundle = false
-    }
 }
 
 setupStub()
